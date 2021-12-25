@@ -1,7 +1,7 @@
 # Private Blockchain Application
 
 [image1]: ./images/GETtheGenesisBlock.png
-[image2]: ./images/2.png
+[image2]: ./images/requestValidation.png
 [image3]: ./images/3.png
 [image4]: ./images/4.png
 
@@ -197,9 +197,9 @@ You should see in your terminal a message indicating that the server is listenin
 2. To make sure your application is working fine and it creates the Genesis Block you can use POSTMAN to request the Genesis block:
     ![Request:localhost:8000/block/height/0][image1]
 3. Make your first request of ownership sending your wallet address:
-    ![Request: http://localhost:8000/requestValidation ](https://s3.amazonaws.com/video.udacity-data.com/topher/2019/April/5ca36182_request-ownership/request-ownership.png)
+    ![Request: http://localhost:8000/requestValidation ][image2]
 4. Sign the message with your Wallet:
-    ![Use the Wallet to sign a message](https://s3.amazonaws.com/video.udacity-data.com/topher/2019/April/5ca36182_request-ownership/request-ownership.png)
+    ![Use the Wallet to sign a message][image2]
 5. Submit your Star
      ![Request: http://localhost:8000/submitstar](https://s3.amazonaws.com/video.udacity-data.com/topher/2019/April/5ca365d3_signing-message/signing-message.png)
 6. Retrieve Stars owned by me
