@@ -76,7 +76,7 @@ class Blockchain {
             block.hash = SHA256(JSON.stringify(block)).toString();
 
             self.chain.push(block);
-            this.height = block.height;
+            self.height = block.height;
             resolve(block);
         });
     }
@@ -126,7 +126,7 @@ class Blockchain {
                 reject(new Error('verified fail'));
                 return;
             }
-            
+
             let data = {address: address, message: message, signature: signature, star: star};
             let block = new BlockClass.Block(data);
             block = await self._addBlock(block);
@@ -143,7 +143,12 @@ class Blockchain {
     getBlockByHash(hash) {
         let self = this;
         return new Promise((resolve, reject) => {
-           
+           let block = self.chain.find(b => b.hash === hash);
+           if(block) {
+               resolve(block);
+           } else {
+               resolve(null);
+           }
         });
     }
 
@@ -155,7 +160,7 @@ class Blockchain {
     getBlockByHeight(height) {
         let self = this;
         return new Promise((resolve, reject) => {
-            let block = self.chain.filter(p => p.height === height)[0];
+            let block = self.chain.filter(b => b.height === height)[0];
             if(block){
                 resolve(block);
             } else {
@@ -174,7 +179,10 @@ class Blockchain {
         let self = this;
         let stars = [];
         return new Promise((resolve, reject) => {
-            
+            let starsByWalletListAddress = self.chain
+            .filter(block => block.height > 0 && block.getBData().owner === address)
+            .map(block => block.getBData());
+            resolve(starsByWalletListAddress);
         });
     }
 
@@ -188,7 +196,18 @@ class Blockchain {
         let self = this;
         let errorLog = [];
         return new Promise(async (resolve, reject) => {
-            
+            let previousBlock = self.chain[0];
+            self.chain.forEach(block => {
+                if(!block.validate()){
+                    errorLog.push(block);
+                }
+
+                if (previousBlock.hash !== block.previousBlockHash) {
+                    errorLog.push("invalid previousBlockHash at " + block.height);
+                }
+            });
+            previousBlock = block;
+            resolve(errorLog)
         });
     }
 
