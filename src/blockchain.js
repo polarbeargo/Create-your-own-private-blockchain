@@ -74,10 +74,13 @@ class Blockchain {
             block.height = self.height + 1;
             block.time = new Date().getTime().toString().slice(0, -3);
             block.hash = SHA256(JSON.stringify(block)).toString();
-
-            self.chain.push(block);
-            self.height = block.height;
-            resolve(block);
+            if(block.hash){
+                self.chain.push(block);
+                self.height = block.height;
+                resolve(block);
+                } else {
+                reject("Error");
+                }
         });
     }
 
