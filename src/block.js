@@ -41,13 +41,16 @@ class Block {
             // Save in auxiliary variable the current block hash
             let auxHash = self.hash;      
             // Recalculate the hash of the Block
+            self.hash = null;
             let recalHash = SHA256(JSON.stringify(self)).toString();
+            
             // Comparing if the hashes changed
             if(auxHash!=recalHash){
                 // Returning the Block is not valid
                 resolve(false);
             }
             // Returning the Block is valid
+            self.hash = recalHash;
             resolve(true);
         });
     }
