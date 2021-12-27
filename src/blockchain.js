@@ -68,13 +68,13 @@ class Blockchain {
                 // genesis block case
                 block.previousBlockHash = null;
             } else {
-                block.previousBlockHash = this.hash;
+                block.previousBlockHash = self.chain[self.height].hash;
             }
 
             block.height = self.height + 1;
             block.time = new Date().getTime().toString().slice(0, -3);
             block.hash = SHA256(JSON.stringify(block)).toString();
-            if(block.hash){
+            if(block.hash && this.validateChain()){
                 self.chain.push(block);
                 self.height = block.height;
                 resolve(block);
@@ -182,7 +182,7 @@ class Blockchain {
     getStarsByWalletAddress (address) {
         let self = this;
         return new Promise(async(resolve, reject) => {        
-            const chain = self.chain.slice(1, this.chain.length + 1);;
+            const chain = self.chain.slice(1, this.chain.length + 1);
             const stars = [];
             for (const block of chain) {
                 const bData = await block.getBData();
@@ -205,19 +205,14 @@ class Blockchain {
         let self = this;
         let errorLog = [];
         return new Promise(async (resolve, reject) => {
-            let previousBlock = self.chain[0];
-            self.chain.forEach(async block => {
+            const chain = self.chain.slice(1, this.chain.length + 1);
+            for (const block of chain) {
                 if (await block.validate()) {
-                    if (previousBlock.hash !== block.previousBlockHash) {
-                        errorLog.push("invalid previousBlockHash at " + block.height);
-                    }
-                }else{
-                    errorLog.push(block);
+                    errorLog.push("invalid previousBlockHash at " + block.height);
                 }
+            }
+            resolve(errorLog);
             });
-            previousBlock = block;
-            resolve(errorLog)
-        });
     }
 
 }
