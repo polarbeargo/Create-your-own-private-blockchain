@@ -78,9 +78,9 @@ class Blockchain {
                 self.chain.push(block);
                 self.height = block.height;
                 resolve(block);
-                } else {
+            } else {
                 reject("Error");
-                }
+            }
         });
     }
 
