@@ -179,12 +179,17 @@ class Blockchain {
      */
     getStarsByWalletAddress (address) {
         let self = this;
-        let stars = [];
-        return new Promise((resolve, reject) => {
-            let starsByWalletListAddress = self.chain
-            .filter(block => block.height > 0 && block.getBData().owner === address)
-            .map(block => block.getBData());
-            resolve(starsByWalletListAddress);
+        return new Promise((resolve, reject) => {        
+            const chain = self.chain.slice(1, this.chain.length + 1);;
+            const stars = [];
+            for (const block of chain) {
+                const bData = block.getBData();
+
+                if (bData && bData.owner === address) {
+                    stars.push(bData);
+                }
+            }
+            resolve(stars);
         });
     }
 
@@ -199,13 +204,13 @@ class Blockchain {
         let errorLog = [];
         return new Promise(async (resolve, reject) => {
             let previousBlock = self.chain[0];
-            self.chain.forEach(block => {
-                if(!block.validate()){
+            self.chain.forEach(async block => {
+                if (await block.validate()) {
+                    if (previousBlock.hash !== block.previousBlockHash) {
+                        errorLog.push("invalid previousBlockHash at " + block.height);
+                    }
+                }else{
                     errorLog.push(block);
-                }
-
-                if (previousBlock.hash !== block.previousBlockHash) {
-                    errorLog.push("invalid previousBlockHash at " + block.height);
                 }
             });
             previousBlock = block;
