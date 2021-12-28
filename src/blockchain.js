@@ -207,7 +207,7 @@ class Blockchain {
         return new Promise(async (resolve, reject) => {
             const chain = self.chain.slice(1, this.chain.length + 1);
             for (const block of chain) {
-                if (await block.validate()) {
+                if (!await block.validate()) {
                     errorLog.push("invalid previousBlockHash at " + block.height);
                 }
             }
