@@ -120,22 +120,16 @@ class BlockchainController {
 
     getValidateChain() {
         this.app.get("/validateChain", async (req, res) => {
-            if(req.params.address) {
-                const address = req.params.address;
                 try {
-                    let stars = await this.blockchain.validateChain();
-                    if(stars){
-                        return res.status(200).json(stars);
+                    let validate_chain = await this.blockchain.validateChain();
+                    if(validate_chain){
+                        return res.status(200).json(validate_chain);
                     } else {
                         return res.status(404).send("Block Not Found!");
                     }
                 } catch (error) {
                     return res.status(500).send("An error happened!");
-                }
-            } else {
-                return res.status(500).send("Block Not Found! Review the Parameters!");
-            }
-            
+                }    
         });
     }
 
