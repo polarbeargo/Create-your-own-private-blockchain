@@ -74,11 +74,13 @@ class Blockchain {
             block.height = self.height + 1;
             block.time = new Date().getTime().toString().slice(0, -3);
             block.hash = SHA256(JSON.stringify(block)).toString();
-            if(block.hash && this.validateChain()){
+            const errorLog = await self.validateChain();                
+            if(block.hash && errorLog==0){
                 self.chain.push(block);
                 self.height = block.height;
                 resolve(block);
             } else {
+                resolve({message: "Blockchain is invalid", error: errorLog, status: false});
                 reject("Error");
             }
         });
