@@ -75,7 +75,7 @@ class Blockchain {
             block.time = new Date().getTime().toString().slice(0, -3);
             block.hash = SHA256(JSON.stringify(block)).toString();
             const errorLog = await self.validateChain();                
-            if(block.hash && errorLog==0){
+            if(block.hash && errorLog.length==0){
                 self.chain.push(block);
                 self.height = block.height;
                 resolve(block);
@@ -126,7 +126,7 @@ class Blockchain {
             console.log(currentTime - messageTime <= 5 * 60);
             console.log(messageTime);
             console.log(currentTime);
-            if (currentTime - messageTime <= 5 * 60000) {
+            if (currentTime - messageTime <= 3000) {
                 if (bitcoinMessage.verify(message, address, signature)) {
                     let data = { address: address, star: star };
                     let block = new BlockClass.Block(data);
@@ -211,7 +211,9 @@ class Blockchain {
             for (const block of chain) {
                 if (!await block.validate()) {
                     errorLog.push("invalid previousBlockHash at " + block.height);
-                }
+                } else if (block.height > 0 && block.previousBlockHash != self.chain[block-1].hash){
+                    errorLog.push(block.hash);
+                }   
             }
             resolve(errorLog);
             });
