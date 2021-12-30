@@ -126,7 +126,7 @@ class Blockchain {
             console.log(currentTime - messageTime <= 5 * 60);
             console.log(messageTime);
             console.log(currentTime);
-            if (currentTime - messageTime <= 3000) {
+            if (currentTime - messageTime <= 300) {
                 if (bitcoinMessage.verify(message, address, signature)) {
                     let data = { address: address, star: star };
                     let block = new BlockClass.Block(data);
